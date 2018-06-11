@@ -4,6 +4,3 @@ node_js:
 sudo: required
 services:
   - docker
-script:
-  - sudo docker pull bitnami/redis:4.0.9 # For some reason I have to do this even though I tell docker to pull the image
-  - yarn test

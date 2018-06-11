@@ -28,9 +28,21 @@ suite("Redis updater service test", () => {
     const MESSAGE_AWAIT_TIME = 500;
     const DEFAULT_ASYNC_TIMEOUT = 10000;
 
+    before(function (done) {
+        this.timeout(30000);
+
+        docker.pull("bitnami/redis:4.0.9", {}, (err, stream) => {
+            if (err) {
+                console.log("Got an error pulling the image.");
+                return;
+            }
+
+            docker.modem.followProgress(stream, () => done(), () => {});
+        });
+    });
+
     beforeEach(async function ()  {
         this.timeout(DEFAULT_ASYNC_TIMEOUT);
-        await docker.pull("bitnami/redis:4.0.9", {});
         container = await docker.createContainer(<CreateOptionsWithPortBindings>{
             Image: "bitnami/redis:4.0.9",
             Env: [
