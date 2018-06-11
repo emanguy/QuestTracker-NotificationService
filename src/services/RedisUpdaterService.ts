@@ -49,6 +49,11 @@ export class RedisUpdaterService {
         log.info("Successfully connected to redis.");
     }
 
+    // This is really only used in testing
+    public disconnect() {
+        this.subscription.quit();
+    }
+
     private subscribeToRedisTopics() {
         this.subscription.on("message", (channel:string, message:string) => {
             let deserializedMessage:QuestUpdateMessage;

@@ -86,6 +86,7 @@ suite("Redis updater service test", () => {
                 expect(updatePosted).to.be.true;
                 expect(deletePosted).to.be.true;
                 redisClient.quit();
+                service.disconnect();
                 done();
             }, MESSAGE_AWAIT_TIME);
         }, DOCKER_STARTUP_TIME); // Give the redis container about 5 seconds to spin up
@@ -108,6 +109,7 @@ suite("Redis updater service test", () => {
                 console.log(`UpdateReceived value: ${updateReceived}`);
                 expect(updateReceived).to.be.false;
                 redisClient.quit();
+                service.disconnect();
                 done();
             });
         }, DOCKER_STARTUP_TIME);
@@ -130,6 +132,7 @@ suite("Redis updater service test", () => {
                 console.log(`UpdateReceived value: ${updateReceived}`);
                 expect(updateReceived).to.be.false;
                 redisClient.quit();
+                service.disconnect();
                 done();
             });
         }, DOCKER_STARTUP_TIME);
