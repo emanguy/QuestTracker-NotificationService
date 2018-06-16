@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sample</title>
+</head>
+<body>
+    <h3>Received messages: </h3>
+    <ul id="msg-recv">
+    </ul>
+    <br>
+    <p>Connection state: <span id="connectionState">disconnected</span></p>
+
+    <script type="application/javascript">
+        window.onload = function() {
+            const messageListElement = document.getElementById("msg-recv");
+            const connectionStateElement = document.getElementById("connectionState");
+
+            const serverNotifications = new EventSource("http://localhost:3000/push/register");
+
+            serverNotifications.onopen = function() {
+                connectionStateElement.textContent = "connected";
+            };
+
+            serverNotifications.addEventListener("new_item", function(message) {
+                const messageContainer = document.createElement("li");
+
+                messageContainer.textContent = "message: " + message.data;
+                messageListElement.appendChild(messageContainer);
+
+                if (Notification.permission === "granted") {
+                    new Notification("New message!", {body: message.data});
+                }
+            });
+
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
