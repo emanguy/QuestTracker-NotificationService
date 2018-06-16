@@ -18,7 +18,7 @@ app.use(addLoggingInfo);
 app.use("/push/", PushServiceClientController);
 
 app.get("/", (_, res:Response) => {
-    res.status(200).send("Hello, world!");
+    res.status(200).send(`Quest tracker notification service -- version ${process.env.npm_package_version}`);
 });
 
 app.listen(config.applicationPort, () => log.info(`App is running on port ${config.applicationPort}!`));
