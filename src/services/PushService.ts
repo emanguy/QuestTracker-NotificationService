@@ -1,11 +1,10 @@
-import { Request, Response } from "express";
-import { v4 as uuid } from "uuid";
-import { RedisUpdaterService } from "./RedisUpdaterService";
+import {Request, Response} from "express";
+import {v4 as uuid} from "uuid";
+import redisService, {RedisUpdaterService} from "./RedisUpdaterService";
 import config from "../config";
+import {GenericAdd, GenericDeletion, GenericUpdate} from "common-interfaces/QuestInterfaces";
+import {MessageType} from "common-interfaces/NotificationInterfaces";
 import SseChannel = require("sse-channel");
-import redisService from "./RedisUpdaterService";
-
-export enum MessageType { DATA_UPDATE = "update_item", DATA_NEW = "new_item", DATA_REMOVED = "remove_item" }
 
 let serviceInstance: PushService | null = null;
 
@@ -24,7 +23,7 @@ export class PushService {
         this.channel.addClient(req, res);
     }
 
-    addNewItem(item:object) {
+    addNewItem(item: GenericAdd) {
         this.channel.send({
             data: item,
             id: uuid(),
@@ -32,7 +31,7 @@ export class PushService {
         });
     }
 
-    updateExistingItem(item:object) {
+    updateExistingItem(item: GenericUpdate) {
         this.channel.send({
             data: item,
             id: uuid(),
@@ -40,7 +39,7 @@ export class PushService {
         });
     }
 
-    deleteItem(item:object) {
+    deleteItem(item: GenericDeletion) {
         this.channel.send({
             data: item,
             id: uuid(),

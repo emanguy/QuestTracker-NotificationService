@@ -20,6 +20,7 @@
     "@types/uuid": "^3.4.3",
     "@types/winston": "^2.3.9",
     "body-parser": "^1.18.3",
+    "common-interfaces": "github:emanguy/QuestTracker-CommonInterfaces#1.1.0",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "morgan": "^1.9.0",
@@ -28,7 +29,7 @@
     "ts-node": "^6.0.5",
     "typescript": "^2.8.3",
     "uuid": "^3.2.1",
-    "winston": "^2.4.2"
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.3",
