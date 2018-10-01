@@ -32,7 +32,7 @@ suite("Redis updater service test", () => {
         redisUrl: "redis://localhost:6379",
         redisPassword: "testRedis"
     };
-    const DOCKER_STARTUP_TIME = 3000;
+    const DOCKER_STARTUP_TIME = 5000;
     const MESSAGE_AWAIT_TIME = 500;
     const DEFAULT_ASYNC_TIMEOUT = 10000;
 
