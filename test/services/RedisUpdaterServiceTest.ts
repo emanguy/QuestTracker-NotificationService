@@ -1,10 +1,18 @@
-import { suite, it, beforeEach, afterEach } from "mocha";
-import { expect } from "chai";
+import {afterEach, beforeEach, it, suite} from "mocha";
+import {expect} from "chai";
 import * as Docker from "dockerode";
-import { Container, ContainerCreateOptions } from "dockerode";
-import { Configuration } from "../../src/config";
-import { RedisUpdaterService } from "../../src/services/RedisUpdaterService";
+import {Container, ContainerCreateOptions} from "dockerode";
+import {Configuration} from "../../src/config";
+import {RedisUpdaterService} from "../../src/services/RedisUpdaterService";
 import {createClient} from "redis";
+import {
+    GenericAdd,
+    GenericDeletion,
+    GenericUpdate,
+    HierarchyLevel,
+    Objective,
+    ObjectiveUpdate
+} from "common-interfaces/QuestInterfaces";
 
 interface HostPortBinding {
     HostPort:string
@@ -24,7 +32,7 @@ suite("Redis updater service test", () => {
         redisUrl: "redis://localhost:6379",
         redisPassword: "testRedis"
     };
-    const DOCKER_STARTUP_TIME = 3000;
+    const DOCKER_STARTUP_TIME = 5000;
     const MESSAGE_AWAIT_TIME = 500;
     const DEFAULT_ASYNC_TIMEOUT = 10000;
 
@@ -78,17 +86,34 @@ suite("Redis updater service test", () => {
             let updatePosted = false;
             let deletePosted = false;
 
-            service.toNotifyOnAdd.push((_) => addPosted = true);
-            service.toNotifyOnUpdate.push((_) => updatePosted = true);
-            service.toNotifyOnRemove.push((_) => deletePosted = true);
+            const addMessage: GenericAdd = {
+                type: HierarchyLevel.OBJECTIVE,
+                newData: <Objective> {id: "a", text: "text", completed: true}
+            };
+            const updateMessage: GenericUpdate = {
+                type: HierarchyLevel.OBJECTIVE,
+                updateDetail: <ObjectiveUpdate> {
+                    questId: "a",
+                    objectiveId: "b",
+                    text: "text"
+                }
+            };
+            const deleteMessage: GenericDeletion = {
+                type: HierarchyLevel.QUEST,
+                id: "a"
+            };
+
+            service.toNotifyOnAdd.push(() => addPosted = true);
+            service.toNotifyOnUpdate.push(() => updatePosted = true);
+            service.toNotifyOnRemove.push(() => deletePosted = true);
 
             const redisClient = createClient(config.redisUrl, {
                 password: config.redisPassword
             });
 
-            redisClient.publish("new-quests", '{"updateDescriptor":"b"}');
-            redisClient.publish("quest-updates", '{"updateDescriptor":"b"}');
-            redisClient.publish("removed-quests", '{"updateDescriptor":"b"}');
+            redisClient.publish("new-quests", JSON.stringify(addMessage));
+            redisClient.publish("quest-updates", JSON.stringify(updateMessage));
+            redisClient.publish("removed-quests", JSON.stringify(deleteMessage));
 
             setTimeout(() => {
                 console.log(`AddPosted value: ${addPosted}`);
@@ -109,38 +134,15 @@ suite("Redis updater service test", () => {
             const service = new RedisUpdaterService(config);
             let updateReceived = false;
 
-            service.toNotifyOnAdd.push((_) => updateReceived = true);
-            service.toNotifyOnUpdate.push((_) => updateReceived = true);
-            service.toNotifyOnRemove.push((_) => updateReceived = true);
+            service.toNotifyOnAdd.push(() => updateReceived = true);
+            service.toNotifyOnUpdate.push(() => updateReceived = true);
+            service.toNotifyOnRemove.push(() => updateReceived = true);
 
             const redisClient = createClient(config.redisUrl, {
                 password: config.redisPassword
             });
 
             redisClient.publish("new-quests", "not json", () => {
-                console.log(`UpdateReceived value: ${updateReceived}`);
-                expect(updateReceived).to.be.false;
-                redisClient.quit();
-                service.disconnect();
-                done();
-            });
-        }, DOCKER_STARTUP_TIME);
-    }).timeout(DEFAULT_ASYNC_TIMEOUT);
-
-    it("does not push messages without necessary fields", (done) => {
-        setTimeout(() => {
-            const service = new RedisUpdaterService(config);
-            let updateReceived = false;
-
-            service.toNotifyOnAdd.push((_) => updateReceived = true);
-            service.toNotifyOnUpdate.push((_) => updateReceived = true);
-            service.toNotifyOnRemove.push((_) => updateReceived = true);
-
-            const redisClient = createClient(config.redisUrl, {
-                password: config.redisPassword
-            });
-
-            redisClient.publish("new-quests", '{"notAValidField":"a"}', () => {
                 console.log(`UpdateReceived value: ${updateReceived}`);
                 expect(updateReceived).to.be.false;
                 redisClient.quit();

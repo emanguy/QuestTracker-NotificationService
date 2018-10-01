@@ -22,14 +22,36 @@
                 connectionStateElement.textContent = "connected";
             };
 
-            serverNotifications.addEventListener("new_item", function(message) {
+            serverNotifications.addEventListener("new-item", function(message) {
                 const messageContainer = document.createElement("li");
 
-                messageContainer.textContent = "message: " + message.data;
+                messageContainer.textContent = "NEW ITEM message: " + message.data;
                 messageListElement.appendChild(messageContainer);
 
                 if (Notification.permission === "granted") {
                     new Notification("New message!", {body: message.data});
+                }
+            });
+
+            serverNotifications.addEventListener("update-item", function(message) {
+                const messageContainer = document.createElement("li");
+
+                messageContainer.textContent = "ITEM UPDATE message: " + message.data;
+                messageListElement.appendChild(messageContainer);
+
+                if (Notification.permission === "granted") {
+                    new Notification("New update!", {body: message.data});
+                }
+            });
+
+            serverNotifications.addEventListener("remove-item", function(message) {
+                const messageContainer = document.createElement("li");
+
+                messageContainer.textContent = "ITEM DELETED message: " + message.data;
+                messageListElement.appendChild(messageContainer);
+
+                if (Notification.permission === "granted") {
+                    new Notification("New deletion!", {body: message.data});
                 }
             });
 

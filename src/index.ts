@@ -1,7 +1,7 @@
 import * as express from "express";
-import { Response } from "express";
+import {Response} from "express";
 import * as morgan from "morgan";
-import * as log from "winston";
+import log from "./logger";
 import config from "./config";
 import cors from "./middleware/cors";
 import addLoggingInfo from "./middleware/logging-metadata";

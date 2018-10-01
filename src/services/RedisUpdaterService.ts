@@ -1,20 +1,19 @@
-import { createClient, RedisClient } from "redis";
-import { Configuration } from "../config";
-import * as log from "winston";
+import {createClient, RedisClient} from "redis";
+import {Configuration} from "../config";
+import log from "../logger";
+import {GenericAdd, GenericDeletion, GenericUpdate} from "common-interfaces/QuestInterfaces";
 
-interface QuestUpdateMessage {
-    updateDescriptor:object
-}
-
-type UpdateFunction = (update:object) => void;
+type QuestAddedCallback = (update: GenericAdd) => void;
+type QuestUpdatedCallback = (update: GenericUpdate) => void;
+type QuestDeletedCallback = (update: GenericDeletion) => void;
 
 let serviceSingleton: RedisUpdaterService | null = null;
 
 export class RedisUpdaterService {
     private subscription:RedisClient;
-    public readonly toNotifyOnAdd:Array<UpdateFunction>;
-    public readonly toNotifyOnUpdate:Array<UpdateFunction>;
-    public readonly toNotifyOnRemove:Array<UpdateFunction>;
+    public readonly toNotifyOnAdd:Array<QuestAddedCallback>;
+    public readonly toNotifyOnUpdate:Array<QuestUpdatedCallback>;
+    public readonly toNotifyOnRemove:Array<QuestDeletedCallback>;
 
     private ADD_CHANNEL = "new-quests";
     private UPDATE_CHANNEL = "quest-updates";
@@ -56,15 +55,10 @@ export class RedisUpdaterService {
 
     private subscribeToRedisTopics() {
         this.subscription.on("message", (channel:string, message:string) => {
-            let deserializedMessage:QuestUpdateMessage;
+            let deserializedMessage: GenericAdd|GenericUpdate|GenericDeletion;
 
             try {
                 deserializedMessage = JSON.parse(message);
-
-                if (!deserializedMessage.updateDescriptor) {
-                    log.error(`No updateDescriptor field in message: ${message}`);
-                    return;
-                }
             }
             catch (e) {
                 log.warn(`Received bad JSON: ${message}`);
@@ -72,15 +66,15 @@ export class RedisUpdaterService {
             }
 
             if (channel == this.ADD_CHANNEL) {
-                this.toNotifyOnAdd.forEach(async (updateFn) => updateFn(deserializedMessage.updateDescriptor));
+                this.toNotifyOnAdd.forEach(async (updateFn) => updateFn(<GenericAdd> deserializedMessage));
             }
 
             if (channel == this.UPDATE_CHANNEL) {
-                this.toNotifyOnUpdate.forEach(async (updateFn) => updateFn(deserializedMessage.updateDescriptor));
+                this.toNotifyOnUpdate.forEach(async (updateFn) => updateFn(<GenericUpdate> deserializedMessage));
             }
 
             if (channel == this.REMOVE_CHANNEL) {
-                this.toNotifyOnRemove.forEach(async (updateFn) => updateFn(deserializedMessage.updateDescriptor));
+                this.toNotifyOnRemove.forEach(async (updateFn) => updateFn(<GenericDeletion> deserializedMessage));
             }
         });
 
