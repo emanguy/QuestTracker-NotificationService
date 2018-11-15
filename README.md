@@ -11,6 +11,7 @@ sending those events to connected clients.
  * `PROCESS_PORT` - the port to serve the node server on
  * `REDIS_URL` - The connection URL to the redis server which pushes quest update events
  * `REDIS_PASSWORD` - The password for the redis server we're connecting to
+ * `NODE_ENV` - Standard node environment variable.
 
 ## Local testing
 
