@@ -30,6 +30,7 @@ suite("Redis updater service test", () => {
     const config:Configuration = {
         applicationPort: 3000,
         redisUrl: "redis://localhost:6379",
+        environment: "testing",
         redisPassword: "testRedis"
     };
     const DOCKER_STARTUP_TIME = 5000;
