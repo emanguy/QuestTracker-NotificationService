@@ -3,14 +3,16 @@ import {Response} from "express";
 import * as morgan from "morgan";
 import log from "./logger";
 import config from "./config";
-import cors from "./middleware/cors";
 import addLoggingInfo from "./middleware/logging-metadata";
 import jsonParse from "./middleware/json-parse";
 import PushServiceClientController from "./controllers/ClientController";
+import * as cors from "cors";
 
 const app = express();
 
-app.use(cors);
+if (config.environment !== "production") {
+    app.use(cors());
+}
 app.use(morgan("common"));
 app.use(jsonParse);
 app.use(addLoggingInfo);
