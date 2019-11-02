@@ -2,22 +2,26 @@ import {createClient, RedisClient} from "redis";
 import {Configuration} from "../config";
 import log from "../logger";
 import {GenericAdd, GenericDeletion, GenericUpdate} from "common-interfaces/QuestInterfaces";
+import {RedisTestPayload} from "./customTypes/RedisTestTypes";
 
 type QuestAddedCallback = (update: GenericAdd) => void;
 type QuestUpdatedCallback = (update: GenericUpdate) => void;
 type QuestDeletedCallback = (update: GenericDeletion) => void;
+type TestReceiveCallback = (testMessage: RedisTestPayload) => void;
 
 let serviceSingleton: RedisUpdaterService | null = null;
 
 export class RedisUpdaterService {
-    private subscription:RedisClient;
-    public readonly toNotifyOnAdd:Array<QuestAddedCallback>;
-    public readonly toNotifyOnUpdate:Array<QuestUpdatedCallback>;
-    public readonly toNotifyOnRemove:Array<QuestDeletedCallback>;
+    private subscription: RedisClient;
+    public readonly toNotifyOnAdd: Array<QuestAddedCallback>;
+    public readonly toNotifyOnUpdate: Array<QuestUpdatedCallback>;
+    public readonly toNotifyOnRemove: Array<QuestDeletedCallback>;
+    public readonly toNotifyOnTest: Array<TestReceiveCallback>;
 
     private ADD_CHANNEL = "new-quests";
     private UPDATE_CHANNEL = "quest-updates";
     private REMOVE_CHANNEL = "removed-quests";
+    private TEST_CHANNEL = "test-connectivity";
     private RECONNECT_WAIT_TIME = 10000;
 
     constructor(config:Configuration) {
@@ -28,6 +32,7 @@ export class RedisUpdaterService {
         this.toNotifyOnAdd = [];
         this.toNotifyOnUpdate = [];
         this.toNotifyOnRemove = [];
+        this.toNotifyOnTest = [];
 
         this.subscription = createClient(config.redisUrl, {
             password: config.redisPassword,
@@ -51,6 +56,17 @@ export class RedisUpdaterService {
     // This is really only used in testing
     public disconnect() {
         this.subscription.quit();
+    }
+
+    public sendTestMessage(): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            const randomNum = Math.floor(1000 * Math.random());
+            const payload: RedisTestPayload = {
+                testValue: randomNum
+            };
+
+            // TODO add listener to test set and look for sent number, race against 1s timeout
+        })
     }
 
     private subscribeToRedisTopics() {
@@ -84,6 +100,8 @@ export class RedisUpdaterService {
     private logErrors() {
         this.subscription.on("error", (err:Error) => {
             log.warn(`Got an error from the redis connector. Message: ${err.message}`);
+            // Kill the process so K8s can restart it
+            process.exit(1);
         })
     }
 }
