@@ -39,6 +39,7 @@
     "@types/mocha": "^5.2.0",
     "chai": "^4.1.2",
     "dockerode": "^2.5.5",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "sleep-promise": "^8.0.1"
   }
 }

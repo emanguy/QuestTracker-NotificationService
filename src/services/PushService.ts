@@ -1,9 +1,9 @@
 import {Request, Response} from "express";
 import {v4 as uuid} from "uuid";
 import redisService, {RedisUpdaterService} from "./RedisUpdaterService";
-import config from "../config";
 import {GenericAdd, GenericDeletion, GenericUpdate} from "common-interfaces/QuestInterfaces";
 import {MessageType} from "common-interfaces/NotificationInterfaces";
+import config from "../../test/Util";
 import SseChannel = require("sse-channel");
 
 let serviceInstance: PushService | null = null;

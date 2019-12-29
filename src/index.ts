@@ -2,11 +2,11 @@ import * as express from "express";
 import {Response} from "express";
 import * as morgan from "morgan";
 import log from "./logger";
-import config from "./config";
 import addLoggingInfo from "./middleware/logging-metadata";
 import jsonParse from "./middleware/json-parse";
 import PushServiceClientController from "./controllers/ClientController";
 import * as cors from "cors";
+import config from "../test/Util";
 
 const app = express();
 
