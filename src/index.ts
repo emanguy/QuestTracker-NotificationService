@@ -2,11 +2,12 @@ import * as express from "express";
 import {Response} from "express";
 import * as morgan from "morgan";
 import log from "./logger";
-import config from "./config";
 import addLoggingInfo from "./middleware/logging-metadata";
 import jsonParse from "./middleware/json-parse";
 import PushServiceClientController from "./controllers/ClientController";
+import HealthController from "./controllers/HealthController";
 import * as cors from "cors";
+import config from "./config";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(jsonParse);
 app.use(addLoggingInfo);
 
 app.use("/push/", PushServiceClientController);
+app.use("/healthz/", HealthController);
 
 app.get("/", (_, res:Response) => {
     res.status(200).send(`Quest tracker notification service -- version ${process.env.npm_package_version}`);
