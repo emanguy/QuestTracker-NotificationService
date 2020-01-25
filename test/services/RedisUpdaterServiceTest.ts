@@ -19,9 +19,9 @@ suite("Redis updater service test", () => {
     let container:Container;
     let docker = new Docker();
     let containersToDelete:Container[] = [];
-    const DOCKER_STARTUP_TIME = 5000;
+    const DOCKER_STARTUP_TIME = 7000;
     const MESSAGE_AWAIT_TIME = 500;
-    const DEFAULT_ASYNC_TIMEOUT = 10000;
+    const DEFAULT_ASYNC_TIMEOUT = 15000;
 
     suite("With Redis", () => {
         before(async function() {
