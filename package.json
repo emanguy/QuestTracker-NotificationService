@@ -25,6 +25,8 @@
     "cors": "^2.8.5",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "express-async-handler": "^1.1.4",
+    "http-status-codes": "^1.4.0",
     "morgan": "^1.9.0",
     "redis": "^2.8.0",
     "sse-channel": "^3.0.1",

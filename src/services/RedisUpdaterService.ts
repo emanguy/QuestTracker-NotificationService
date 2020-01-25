@@ -89,10 +89,12 @@ export class RedisUpdaterService {
                 testValue: randomNum
             };
             let receivedInput = false;
+            log.debug("Launching promise");
 
             // Option 1 - Receive response before timeout and our number matches. Resolve with true, our connection to redis is working
             const listnenerFn = (response: RedisTestPayload) => {
                 // If we got a different value than the one we sent, ignore
+                log.debug("Got callback");
                 if (response.testValue !== randomNum) return;
                 receivedInput = true;
                 this.removeTestListenerByID(randomNum);
@@ -100,12 +102,14 @@ export class RedisUpdaterService {
             };
             // Option 2 - We don't receive a response after 3 seconds, we assume the redis connection isn't working and resolve with false
             setTimeout(() => {
+                log.debug("Timed out");
                 if (receivedInput) return;
                 log.error(`Health test timeout, did not receive value (${randomNum}).`);
                 this.removeTestListenerByID(randomNum);
                 resolve(false);
             }, 3000);
 
+            log.debug("Adding listener");
             // Add the listener and send the message
             this.toNotifyOnTest.push({
                 id: randomNum,
@@ -113,11 +117,13 @@ export class RedisUpdaterService {
             });
 
             try {
+                log.debug("Publishing");
                 this.baseClient.publish(this.TEST_CHANNEL, JSON.stringify(payload));
             } catch (err) {
                 log.error(`Failed to send health test message. Will time out shortly. Problem: ${err.message}`);
                 resolve(false);
             }
+            log.debug("Done");
         })
     }
 
@@ -125,6 +131,7 @@ export class RedisUpdaterService {
         this.subscription.on("message", (channel:string, message:string) => {
             let deserializedMessage: GenericAdd|GenericUpdate|GenericDeletion|RedisTestPayload;
             try {
+                log.debug(`Got message: ${message} channel: ${channel}`);
                 deserializedMessage = JSON.parse(message);
             }
             catch (e) {

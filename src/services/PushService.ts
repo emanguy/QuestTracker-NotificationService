@@ -3,7 +3,7 @@ import {v4 as uuid} from "uuid";
 import redisService, {RedisUpdaterService} from "./RedisUpdaterService";
 import {GenericAdd, GenericDeletion, GenericUpdate} from "common-interfaces/QuestInterfaces";
 import {MessageType} from "common-interfaces/NotificationInterfaces";
-import config from "../../test/Util";
+import config from "../config";
 import SseChannel = require("sse-channel");
 
 let serviceInstance: PushService | null = null;
@@ -11,7 +11,7 @@ let serviceInstance: PushService | null = null;
 export class PushService {
     private channel:SseChannel;
 
-    constructor(redisService:RedisUpdaterService) {
+    constructor(redisService: RedisUpdaterService) {
         this.channel = new SseChannel({jsonEncode: true, cors: {origins: "*"}});
 
         redisService.toNotifyOnAdd.push(this.addNewItem.bind(this));
@@ -19,7 +19,7 @@ export class PushService {
         redisService.toNotifyOnRemove.push(this.deleteItem.bind(this));
     }
 
-    addClient(req:Request, res:Response) {
+    addClient(req: Request, res: Response) {
         this.channel.addClient(req, res);
     }
 
