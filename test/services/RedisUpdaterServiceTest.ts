@@ -21,7 +21,7 @@ suite("Redis updater service test", () => {
     let containersToDelete:Container[] = [];
     const DOCKER_STARTUP_TIME = 7000;
     const MESSAGE_AWAIT_TIME = 500;
-    const DEFAULT_ASYNC_TIMEOUT = 15000;
+    const DEFAULT_ASYNC_TIMEOUT = 20000;
 
     suite("With Redis", () => {
         before(async function() {
@@ -116,8 +116,9 @@ suite("Redis updater service test", () => {
                     password: testConfig.redisPassword
                 });
 
-                redisClient.publish("new-quests", "not json", () => {
+                redisClient.publish("new-quests", "not json", async () => {
                     console.log(`UpdateReceived value: ${updateReceived}`);
+                    await sleep(MESSAGE_AWAIT_TIME);
                     expect(updateReceived).to.be.false;
                     redisClient.quit();
                     service.disconnect();
@@ -129,6 +130,7 @@ suite("Redis updater service test", () => {
         it("can verify its connection to redis", (done) => {
             setTimeout(async () => {
                 const service = new RedisUpdaterService(testConfig);
+                await sleep(MESSAGE_AWAIT_TIME);
                 const connectionStatus = await service.sendTestMessage();
                 try {
                     expect(connectionStatus).to.be.true;

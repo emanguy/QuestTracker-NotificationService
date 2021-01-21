@@ -16,7 +16,7 @@ const redisPort = "6379";
 
 export const testConfig: Configuration = {
     applicationPort: 3000,
-    redisUrl: `redis://localhost:${redisPort}`,
+    redisUrl: `redis://127.0.0.1:${redisPort}`,
     environment: "testing",
     redisPassword: "testRedis"
 };
