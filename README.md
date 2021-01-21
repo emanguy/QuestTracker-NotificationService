@@ -1,4 +1,4 @@
-# Quest Tracker Notification Service [![Build Status](https://travis-ci.org/emanguy/QuestTracker-NotificationService.svg?branch=master)](https://travis-ci.org/emanguy/QuestTracker-NotificationService)
+# Quest Tracker Notification Service [![CircleCI](https://circleci.com/gh/emanguy/QuestTracker-NotificationService.svg?style=svg)](https://circleci.com/gh/emanguy/QuestTracker-NotificationService)
 
 This Node.js server contains the code for pushing quest updates to clients. Upon visiting the
 page, the client will register with this server to receive quest update events and notifications.
