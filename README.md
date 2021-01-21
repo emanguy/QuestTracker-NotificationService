@@ -1,4 +1,4 @@
-# Quest Tracker Notification Service [![Build Status](https://travis-ci.org/emanguy/QuestTracker-NotificationService.svg?branch=master)](https://travis-ci.org/emanguy/QuestTracker-NotificationService)
+# Quest Tracker Notification Service [![CircleCI](https://circleci.com/gh/emanguy/QuestTracker-NotificationService.svg?style=svg)](https://circleci.com/gh/emanguy/QuestTracker-NotificationService)
 
 This Node.js server contains the code for pushing quest updates to clients. Upon visiting the
 page, the client will register with this server to receive quest update events and notifications.
@@ -22,3 +22,4 @@ environment variables that the application complains about missing on startup.
 Once the server starts up, go ahead and open [sample.html](sample.html). This page will continually write a list of received
 messages fron the push notification service and also display native notifications via the browser API. Messages should appear
 whenever a create, update, or delete operation occurs on a quest/objective on the Frontend API server.
+
