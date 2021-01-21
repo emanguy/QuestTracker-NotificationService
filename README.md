@@ -22,3 +22,4 @@ environment variables that the application complains about missing on startup.
 Once the server starts up, go ahead and open [sample.html](sample.html). This page will continually write a list of received
 messages fron the push notification service and also display native notifications via the browser API. Messages should appear
 whenever a create, update, or delete operation occurs on a quest/objective on the Frontend API server.
+
