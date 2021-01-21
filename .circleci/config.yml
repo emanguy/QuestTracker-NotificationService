@@ -12,11 +12,6 @@ jobs:
       image: ubuntu-2004:202010-01
     steps:
       - run:
-          name: "Install native libraries for bcrypt"
-          command: |
-            sudo apt update
-            sudo apt install -y build-essential make g++
-      - run:
           name: "Switch to node 12"
           command: |
             source /opt/circleci/.nvm/nvm.sh
