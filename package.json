@@ -28,7 +28,7 @@
     "express-async-handler": "^1.1.4",
     "http-status-codes": "^1.4.0",
     "morgan": "^1.9.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "sse-channel": "^3.0.1",
     "ts-node": "^6.0.5",
     "typescript": "^2.8.3",
