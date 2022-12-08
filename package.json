@@ -24,7 +24,7 @@
     "common-interfaces": "github:emanguy/QuestTracker-CommonInterfaces#1.2.1",
     "cors": "^2.8.5",
     "dotenv": "^5.0.1",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "express-async-handler": "^1.1.4",
     "http-status-codes": "^1.4.0",
     "morgan": "^1.9.0",
